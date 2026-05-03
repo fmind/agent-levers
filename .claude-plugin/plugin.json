@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "agent-levers",
+  "version": "1.0.0",
+  "description": "Levers for AI coding agents — multiply the agent's force, divide the human's effort.",
+  "author": {
+    "name": "Médéric Hurier",
+    "email": "github@fmind.dev",
+    "url": "https://fmind.dev"
+  },
+  "homepage": "https://github.com/fmind/agent-levers",
+  "repository": "https://github.com/fmind/agent-levers",
+  "license": "MIT",
+  "keywords": [
+    "agentic-coding",
+    "agent-skills",
+    "workflow",
+    "levers",
+    "gemini-cli",
+    "claude-code",
+    "github-copilot"
+  ]
+}

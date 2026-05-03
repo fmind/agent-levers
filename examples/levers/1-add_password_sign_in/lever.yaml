@@ -1,0 +1,79 @@
+lever_id: 1
+slug: add_password_sign_in
+created_at: "2026-05-02T09:00:00Z"
+updated_at: "2026-05-02T10:30:00Z"
+
+step: done
+
+budget:
+  max_iterations: 20
+  max_minutes: 75
+  max_streak: 5
+
+criteria:
+  - id: C1
+    description: Login returns 200 + JWT on valid credentials.
+    verify:
+      type: shell
+      cmd: npx vitest run tests/auth/login.test.ts -t 'returns jwt on valid credentials'
+    seed: tests/auth/login.test.ts::returns jwt on valid credentials
+    passes: true
+    output: 1 passed
+    events:
+      - at: "09:14"
+        verb: pass
+        cmd: npx vitest run tests/auth/login.test.ts -t 'returns jwt on valid credentials'
+        output: 1 passed
+        note: TDD — wrote failing test first, then handler that fetches user, calls bcrypt.compare, issues JWT.
+  - id: C2
+    description: Login returns 401 on wrong password.
+    verify:
+      type: shell
+      cmd: npx vitest run tests/auth/login.test.ts -t 'returns 401 on wrong password'
+    passes: true
+    output: 1 passed
+    events:
+      - at: "09:22"
+        verb: pass
+        cmd: npx vitest run tests/auth/login.test.ts -t 'returns 401 on wrong password'
+        output: 1 passed
+        note: existing handler returns 401 on compare-false; added user-not-found branch using a fixed dummy hash to keep compare timing constant.
+  - id: C3
+    description: Login returns 429 after 5 failed attempts within 1 min from same IP.
+    verify:
+      type: shell
+      cmd: npx vitest run tests/auth/login.test.ts -t 'rate-limits at 5 per minute'
+    passes: true
+    output: 1 passed
+    events:
+      - at: "09:38"
+        verb: fail
+        cmd: npx vitest run tests/auth/login.test.ts -t 'rate-limits at 5 per minute'
+        output: expected 429, got 401
+        note: rate-limit middleware not yet attached to the route.
+      - at: "09:51"
+        verb: pass
+        cmd: npx vitest run tests/auth/login.test.ts -t 'rate-limits at 5 per minute'
+        output: 1 passed
+        note: limiter wired in src/routes/auth.ts:12 as router.post('/login', rate_limit_login, handler); streak reset.
+  - id: C4
+    description: Project type-checks pass.
+    verify:
+      type: shell
+      cmd: npm run typecheck
+    passes: true
+    output: exit 0
+    events:
+      - at: "10:04"
+        verb: pass
+        cmd: npm run typecheck
+        output: exit 0
+        note: clean type-check on full project.
+
+decisions:
+  - Constant-timing user-not-found path — chose dummy-hash compare over early throw. Why brief required no account-existence leakage; the dummy compare is one extra bcrypt op only on the missing-user branch.
+  - Per-route limiter — applied rate_limit_login directly on the login route rather than as global middleware. Why keeps the OAuth path under its own (independent) limit and matches the convention of src/routes/oauth.ts:7.
+
+hints:
+  - 'C3.events 09:38 fail — limiter-wiring missed in first handler pass; "attach middleware" deserves an explicit sub-step in the do TDD pattern.'
+  - "lever.yaml.decisions — per-route-limiter choice cites src/routes/oauth.ts:7 directly, but no project-level rule exists; future sensitive endpoints will re-discover (or re-miss) the convention."

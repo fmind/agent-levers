@@ -1,0 +1,37 @@
+{
+  "name": "agent-levers",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Levers for AI coding agents — multiply the agent's force, divide the human's effort.",
+  "author": {
+    "name": "Médéric Hurier",
+    "email": "github@fmind.dev",
+    "url": "https://fmind.dev"
+  },
+  "homepage": "https://github.com/fmind/agent-levers",
+  "repository": "https://github.com/fmind/agent-levers",
+  "license": "MIT",
+  "keywords": [
+    "agentic-coding",
+    "agent-skills",
+    "workflow",
+    "levers",
+    "gemini-cli",
+    "claude-code",
+    "github-copilot"
+  ],
+  "scripts": {
+    "lint": "prettier --check \"**/*.{md,json,yml,yaml,mjs}\" && markdownlint-cli2",
+    "format": "prettier --write \"**/*.{md,json,yml,yaml,mjs}\" && markdownlint-cli2 --fix",
+    "validate": "ajv validate -s lever.schema.json -d \"examples/**/lever.yaml\" --spec=draft2020 -c=ajv-formats"
+  },
+  "devDependencies": {
+    "ajv-cli": "^5.0.0",
+    "ajv-formats": "^3.0.1",
+    "markdownlint-cli2": "^0.22.1",
+    "prettier": "^3.8.3"
+  },
+  "overrides": {
+    "fast-json-patch": "^3.1.1"
+  }
+}

@@ -1,0 +1,24 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+        args: ["--maxkb=1000"]
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: detect-private-key
+  - repo: local
+    hooks:
+      - id: lint
+        name: npm run lint
+        entry: npm run lint
+        language: system
+        pass_filenames: false
+        types_or: [markdown, json, yaml, javascript]
+      - id: validate
+        name: npm run validate
+        entry: npm run validate
+        language: system
+        pass_filenames: false
+        files: ^(lever\.schema\.json|.*lever\.yaml)$

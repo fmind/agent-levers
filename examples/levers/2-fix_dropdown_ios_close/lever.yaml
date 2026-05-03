@@ -1,0 +1,86 @@
+lever_id: 2
+slug: fix_dropdown_ios_close
+created_at: "2026-05-04T13:20:00Z"
+updated_at: "2026-05-04T14:48:00Z"
+
+step: do
+# pause is absent — the lever is mid-loop. Check routed back to do because
+# the rerun caught a C2 regression. The next /lever 2 re-enters do and
+# resumes the loop on C2.
+
+budget:
+  max_iterations: 15
+  max_minutes: 45
+  max_streak: 5
+
+criteria:
+  - id: C1
+    description: Dropdown closes when user taps outside its bounds on iOS Safari.
+    verify:
+      type: shell
+      cmd: npx playwright test tests/dropdown.spec.ts -g 'closes on outside tap (iOS)'
+    seed: tests/dropdown.spec.ts::closes on outside tap (iOS)
+    passes: true
+    output: 1 passed
+    events:
+      - at: "13:42"
+        verb: fail
+        cmd: npx playwright test tests/dropdown.spec.ts -g 'closes on outside tap (iOS)'
+        output: expected dropdown.hidden=true, got false
+        note: baseline confirms the bug — touchend on document body is not picked up by Safari.
+      - at: "13:58"
+        verb: pass
+        cmd: npx playwright test tests/dropdown.spec.ts -g 'closes on outside tap (iOS)'
+        output: 1 passed
+        note: switched outside-listener from click to pointerdown; iOS Safari now closes correctly.
+  - id: C2
+    description: Dropdown still closes when user taps its built-in close button.
+    verify:
+      type: shell
+      cmd: npx playwright test tests/dropdown.spec.ts -g 'closes via close button'
+    passes: false
+    output: expected dropdown.hidden=true, got false
+    events:
+      - at: "14:05"
+        verb: pass
+        cmd: npx playwright test tests/dropdown.spec.ts -g 'closes via close button'
+        output: 1 passed
+        note: regression check — pre-existing close-button behavior intact.
+      - at: "14:46"
+        verb: fail
+        cmd: npx playwright test tests/dropdown.spec.ts -g 'closes via close button'
+        output: expected dropdown.hidden=true, got false
+        note: check rerun caught regression — pointerdown listener fires before the close-button click handler and re-opens the dropdown via stopPropagation race.
+  - id: C3
+    description: Dropdown closes when user presses Escape.
+    verify:
+      type: shell
+      cmd: npx playwright test tests/dropdown.spec.ts -g 'closes on escape'
+    passes: true
+    output: 1 passed
+    events:
+      - at: "14:08"
+        verb: pass
+        cmd: npx playwright test tests/dropdown.spec.ts -g 'closes on escape'
+        output: 1 passed
+        note: regression check — keyboard path untouched by the iOS fix.
+  - id: C4
+    description: Project type-checks pass.
+    verify:
+      type: shell
+      cmd: npm run typecheck
+    passes: true
+    output: exit 0
+    events:
+      - at: "14:14"
+        verb: pass
+        cmd: npm run typecheck
+        output: exit 0
+        note: clean type-check.
+
+decisions:
+  - Switched outside-listener event from `click` to `pointerdown` — Safari does not synthesize click on document body for taps that originated on a child element, and capture-phase pointerdown fires reliably on iOS. Trade-off recorded as a §Plan §Risk.
+
+# Hints empty — check routed back to do on the C2 regression and never
+# reached its §Scan-for-act-hints sub-step (act runs only after a green rerun).
+hints: []

@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/fmind/agent-levers/lever.schema.json",
+  "title": "Lever state file",
+  "description": "Per-lever machine state, written by the lever-* skills. One file per lever directory: .agents/levers/<id>-<slug>/lever.yaml.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["lever_id", "slug", "created_at", "updated_at", "step", "criteria"],
+  "properties": {
+    "lever_id": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Unique sequential lever identifier (the leading <id> in the directory name)."
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "maxLength": 40,
+      "description": "Lower snake_case slug; matches the trailing <slug> in the directory name."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Set by /lever-new at lever-dir creation; immutable."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Bumped on every write."
+    },
+    "step": {
+      "enum": ["plan", "do", "check", "act", "done", "cancel"],
+      "description": "Single state pointer. /lever <id> reads this, runs the matching procedure for `plan|do|check|act`, advances on success. `done` is terminal success; `cancel` is terminal abandonment. The pair (step, pause) is the full state. /lever-new seeds at `plan` (the brief is captured pre-state, before lever.yaml exists)."
+    },
+    "pause": {
+      "enum": ["ask", "blocked"],
+      "description": "Optional pause reason — present iff the chain is halted at `step` waiting for the user. `ask` = open question or fork (info missing or option to pick). `blocked` = external blocker (auth, env, budget exhausted). Absent when running or terminal. Re-invoking /lever <id> after the user resolves it re-enters the same step."
+    },
+    "budget": { "$ref": "#/$defs/budget" },
+    "criteria": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/criterion" },
+      "description": "Empty after /lever-new; populated by /lever <id> at the plan step; flags flipped by do and check."
+    },
+    "decisions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Non-obvious calls do made; one bullet per decision. Sole record — LEVER.md does not mirror this."
+    },
+    "hints": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Promotable moments check surfaced; one bullet per hint, no proposal. Sole record — LEVER.md does not mirror this. Input to act."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": { "criteria": { "type": "array", "minItems": 1 } }
+      },
+      "then": { "required": ["budget"] }
+    },
+    {
+      "if": {
+        "type": "object",
+        "required": ["pause"],
+        "properties": { "pause": { "type": "string" } }
+      },
+      "then": {
+        "properties": {
+          "step": { "enum": ["plan", "do", "check", "act"] }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_iterations", "max_minutes", "max_streak"],
+      "properties": {
+        "max_iterations": { "type": "integer", "minimum": 1 },
+        "max_minutes": { "type": "integer", "minimum": 1 },
+        "max_streak": { "type": "integer", "minimum": 1 }
+      },
+      "description": "Set by the plan step; immutable thereafter unless /lever <id> re-enters plan."
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "verify", "passes"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^C[1-9][0-9]*$",
+          "description": "Stable, monotonically increasing (C1, C2, ...). Never reused; never reordered."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One-line mechanical criterion."
+        },
+        "verify": { "$ref": "#/$defs/verify" },
+        "seed": {
+          "type": "string",
+          "description": "Optional first-failing-test pointer for an obvious TDD starter."
+        },
+        "passes": {
+          "type": "boolean",
+          "description": "Latest verifier result. False at plan time; flipped by do; overwritten by check on rerun."
+        },
+        "output": {
+          "type": "string",
+          "description": "Latest verifier output, one trimmed line. Prefer the verifier's own summary when it produces one (e.g. '1 passed', '2 matches'); fall back to 'exit 0' or the first failing line when the command is silent."
+        },
+        "events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/event" },
+          "description": "Per-criterion event log written by do (and re-run by check). Capped at the last 10 rows per criterion; on overflow, the oldest rows are replaced with a single `verb: fold` row whose `at` is the time range and `note` explains how many rows were dropped. /lever-status <id> renders this as a per-criterion timeline when the user asks for the trace."
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["at", "verb"],
+      "properties": {
+        "at": {
+          "type": "string",
+          "description": "ISO8601 UTC timestamp, or HH:MM-HH:MM range for fold compactions."
+        },
+        "verb": {
+          "enum": ["pass", "fail", "fold"],
+          "description": "Per-criterion verb. `pass` / `fail` record a verifier run; `fold` marks a compaction row written when the cap evicts older rows. Lever-wide non-obvious calls go in top-level `decisions[]`, not in events."
+        },
+        "cmd": {
+          "type": "string",
+          "description": "Exact shell command run, when applicable."
+        },
+        "output": {
+          "type": "string",
+          "description": "Trimmed output (key lines only)."
+        },
+        "note": {
+          "type": "string",
+          "description": "One-line decision rationale or fold root-cause / drop count."
+        }
+      }
+    },
+    "verify": {
+      "oneOf": [
+        { "$ref": "#/$defs/verifyShell" },
+        { "$ref": "#/$defs/verifyVisual" },
+        { "$ref": "#/$defs/verifyManual" }
+      ]
+    },
+    "verifyShell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "cmd"],
+      "properties": {
+        "type": { "const": "shell" },
+        "cmd": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Passes when cmd exits 0. Default for code-level checks (tests, type-checks, behavioral verifiers)."
+        }
+      }
+    },
+    "verifyVisual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "screenshot", "expects"],
+      "properties": {
+        "type": { "const": "visual" },
+        "screenshot": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path to the screenshot do attaches."
+        },
+        "expects": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One-line rubric: what the screenshot must show to pass."
+        }
+      }
+    },
+    "verifyManual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "instructions"],
+      "properties": {
+        "type": { "const": "manual" },
+        "instructions": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Multi-line instructions do runs step-by-step. Manual verifiers always require explicit user confirmation; check gates on the user-confirmation event recorded in lever.yaml.criteria[i].events."
+        }
+      }
+    }
+  }
+}

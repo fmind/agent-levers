@@ -1,0 +1,67 @@
+lever_id: <int>
+slug: <slug>
+created_at: "<YYYY-MM-DDTHH:MM:SSZ>" # quoted — keeps the value as a string for schema validation
+updated_at: "<YYYY-MM-DDTHH:MM:SSZ>"
+
+step: plan # plan | do | check | act | done | cancel
+# pause: ask    # ask | blocked — set only when halted; absent when running/terminal
+
+# Set by the plan step; immutable thereafter unless /lever <id> re-enters plan.
+budget:
+  max_iterations: 20
+  max_minutes: 60
+  max_streak: 5
+
+# Empty after /lever-new; populated by plan; per-row state flipped by do and check.
+criteria:
+  - id: C1
+    description: <one-line mechanical criterion>
+    verify:
+      type: shell
+      cmd: <exact shell command>
+    seed: <first failing test, optional — drop the field when none>
+    passes: false # do flips to true on verifier exit 0; check may overwrite on rerun
+    # output: <one trimmed line — set by do on first pass>
+    # events:                 # per-criterion event log — capped at last 10 rows
+    #   - at: "09:38"
+    #     verb: fail
+    #     cmd: npx vitest run tests/auth/login.test.ts -t 'rate-limits at 5 per minute'
+    #     output: expected 429, got 401
+    #     note: rate-limit middleware not yet attached
+    #   - at: "09:51"
+    #     verb: pass
+    #     cmd: npx vitest run tests/auth/login.test.ts -t 'rate-limits at 5 per minute'
+    #     output: 1 passed
+    #     note: limiter wired at src/routes/auth.ts:12
+  - id: C2
+    description: <one-line mechanical criterion>
+    verify:
+      type: shell
+      cmd: <exact shell command>
+    passes: false
+  # Visual example:
+  # - id: C7
+  #   description: Login form renders centered on a 375px viewport.
+  #   verify:
+  #     type: visual
+  #     screenshot: docs/visual/login-mobile.png
+  #     expects: Form is centered, inputs are full-width, button is tappable.
+  #   passes: false
+  # Manual example:
+  # - id: C8
+  #   description: Forgot-password email arrives within 30s.
+  #   verify:
+  #     type: manual
+  #     instructions: |
+  #       1. Trigger /auth/forgot with a real email.
+  #       2. Confirm email arrives in inbox within 30s.
+  #   passes: false
+
+# Non-obvious calls do made; one bullet per decision. Sole record — LEVER.md
+# does not mirror this; humans read the yaml when they want the list.
+decisions: []
+
+# Promotable moments check surfaced; one bullet per hint, no proposal. Sole
+# record — LEVER.md does not mirror this. Input to act: when non-empty, check
+# advances `step` to `act`; when empty, check advances to `done`.
+hints: []
