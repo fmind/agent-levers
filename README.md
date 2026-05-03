@@ -162,22 +162,26 @@ The per-event do audit lives in `lever.yaml.criteria[i].events`; render it inlin
 ```mermaid
 stateDiagram-v2
     [*] --> init
-
     init --> new
     new --> plan
+
     plan --> do
     do --> check
-    check --> done
-    check --> act
-    check --> do
-    check --> plan
+
+    check --> done: pass · no hints
+    check --> act: pass · hints
+    check --> do: failing
+    check --> plan: replan
+
     act --> done
-
-    plan --> plan: pause: ask / blocked
-    do --> do: pause: ask / blocked
-    new --> new: pause: ask
-
     done --> [*]
+
+    note right of plan
+      may pause: ask · blocked
+    end note
+    note right of do
+      may pause: ask · blocked
+    end note
 ```
 
 `init` and `new` are user-typed entries (`/lever-init`, `/lever-new`); the chain steps `plan → do → check → act → done` advance via the dispatcher (`/lever <id>`). `done` is terminal — the diff hands off to the user. `cancel` is a terminal state set via `/lever-status <id> cancel [<reason>]` (see "Cancelling a lever" below); no transition leads to it from the procedures.
