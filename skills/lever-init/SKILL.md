@@ -50,11 +50,11 @@ For each of `CLAUDE.md` and `GEMINI.md`:
 - **Missing.** Write the import shim. The `[ -f … ] ||` guard is POSIX bash:
 
   ```bash
-  [ -f CLAUDE.md ] || printf '@AGENTS.md\n'   > CLAUDE.md
-  [ -f GEMINI.md ] || printf '@./AGENTS.md\n' > GEMINI.md
+  [ -f CLAUDE.md ] || printf '@AGENTS.md\n' > CLAUDE.md
+  [ -f GEMINI.md ] || printf '@AGENTS.md\n' > GEMINI.md
   ```
 
-- **Exists.** Grep for `@AGENTS.md` (Claude Code) or `@./AGENTS.md` / `@AGENTS.md` (Gemini CLI). If absent, the host file won't pick up `AGENTS.md` — silent break. List each broken file with the suggested one-line edit under a `Drift detected:` heading and stop. Init never edits existing host files.
+- **Exists.** Grep for `@AGENTS.md`. If absent, the host file won't pick up `AGENTS.md` — silent break. List each broken file with the suggested one-line edit under a `Drift detected:` heading and stop. Init never edits existing host files.
 
 Copilot needs no shim — it reads `AGENTS.md` natively.
 

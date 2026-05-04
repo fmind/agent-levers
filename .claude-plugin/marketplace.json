@@ -2,7 +2,6 @@
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "agent-levers",
   "description": "Levers for AI coding agents — multiply the agent's force, divide the human's effort.",
-  "version": "1.0.0",
   "owner": {
     "name": "Médéric Hurier",
     "email": "github@fmind.dev"
@@ -12,7 +11,6 @@
       "name": "agent-levers",
       "source": "./",
       "description": "Levers for AI coding agents — multiply the agent's force, divide the human's effort.",
-      "version": "1.0.0",
       "author": {
         "name": "Médéric Hurier",
         "email": "github@fmind.dev",

@@ -19,13 +19,13 @@ Agent Levers flips the balance. You put in the minimum; the agent carries the we
 
 ## What you get
 
-- **Minimum input.** A one-line ask becomes a runnable acceptance checklist with stable IDs (`C1`, `C2`, …) and typed verifiers (`shell`, `visual`, or `manual`).
-- **One chain command.** `/lever <id>` advances the lever through plan → do → check → act → done — autonomously, until it pauses for input or finishes.
-- **Self-verifying.** Every criterion ships a `verify:` block. Check re-runs them as ground truth from a fresh shell — no agent self-grading, no "trust me, it works."
-- **Bounded execution.** Do runs inside an explicit `budget:` (iterations, minutes, streak), so it can pause, resume, hand off, or run overnight without runaways.
-- **File-based state.** Two artifacts per lever — `lever.yaml` (machine state, validated against `lever.schema.json`) and `LEVER.md` (single narrative). LEVER.md opens with `## TL;DR` (≤ 20 lines, rewritten on every step). Skim 20 lines, know everything that matters.
-- **Self-improving.** When a task exposes a recurring gap, act stages a reviewable diff to your `AGENTS.md`, edits a step procedure in place, or surfaces a follow-up `/lever-new` when the gap implies project work rather than a rule.
-- **One source, every agent.** The same skills work in Claude Code, Gemini CLI, and GitHub Copilot — install once, use everywhere.
+- **Pass means it actually works.** Every criterion ships a typed `verify:` (shell / visual / manual). `check` re-runs them from a fresh shell as ground truth — exit-zero, not "the agent said so."
+- **Scope you can audit before code lands.** A one-line ask becomes a numbered acceptance list (`C1 … Cn`), each with its own verifier. `check`'s chain audit catches drift between brief, plan, and diff — beyond what unit tests can see.
+- **Runaway loops, bounded.** `do` runs inside an explicit `budget:` (iterations, minutes, failed-streak). When it hits the wall, it pauses with `pause: blocked` and full state on disk — raise the cap, hand off, or resume; prior passes stay green.
+- **One artifact, the whole story.** `LEVER.md` opens with a `TL;DR` rewritten on every step — outcome, coverage, decisions, what's next. Half a day of agent work, audited in 20 lines.
+- **Resume across sessions.** State lives in `lever.yaml` + `LEVER.md`, not the agent's context. Close the laptop mid-`do`, re-run `/lever <id>` tomorrow — the chain reads the files and picks up.
+- **Lessons compound, lever to lever.** When `act` spots a recurring gap, it stages a reviewable diff to your `AGENTS.md` or recommends a follow-up `/lever-new`. The next lever inherits the rule, not the mistake.
+- **Install once, use anywhere.** The same `skills/` tree drives Claude Code, Gemini CLI, and GitHub Copilot. No fork, no port.
 
 ## The four commands
 
@@ -112,7 +112,15 @@ gemini extensions link /path/to/agent-levers
 Copilot CLI:
 
 ```bash
-copilot plugin install fmind/agent-levers
+copilot plugin marketplace add fmind/agent-levers
+copilot plugin install agent-levers@agent-levers
+```
+
+For local development, point the marketplace at a clone:
+
+```bash
+copilot plugin marketplace add /path/to/agent-levers
+copilot plugin install agent-levers@agent-levers
 ```
 
 VS Code — point `chat.pluginLocations` at a local clone:
