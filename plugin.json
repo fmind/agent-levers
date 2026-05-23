@@ -16,6 +16,9 @@
     "levers",
     "gemini-cli",
     "claude-code",
-    "github-copilot"
+    "github-copilot",
+    "antigravity",
+    "antigravity-cli",
+    "agy"
   ]
 }

@@ -107,6 +107,18 @@ For local development (live-link, edits reload on next session):
 gemini extensions link /path/to/agent-levers
 ```
 
+### Antigravity CLI
+
+```bash
+agy plugin install https://github.com/fmind/agent-levers
+```
+
+For local development (live-link, edits reload on next session):
+
+```bash
+agy plugin install /path/to/agent-levers
+```
+
 ### GitHub Copilot
 
 Copilot CLI:
