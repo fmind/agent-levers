@@ -17,6 +17,7 @@
     "levers",
     "gemini-cli",
     "claude-code",
-    "github-copilot"
+    "github-copilot",
+    "opencode"
   ]
 }

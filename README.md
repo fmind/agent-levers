@@ -1,12 +1,12 @@
 # Agent Levers
 
-[![CI](https://github.com/fmind/agent-levers/actions/workflows/ci.yml/badge.svg)](https://github.com/fmind/agent-levers/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE) [![Claude Code](https://img.shields.io/badge/Claude%20Code-supported-D97706)](https://github.com/anthropics/claude-code) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-4285F4)](https://github.com/google-gemini/gemini-cli) [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-supported-181717)](https://github.com/features/copilot)
+[![CI](https://github.com/fmind/agent-levers/actions/workflows/ci.yml/badge.svg)](https://github.com/fmind/agent-levers/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE) [![Claude Code](https://img.shields.io/badge/Claude%20Code-supported-D97706)](https://github.com/anthropics/claude-code) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-4285F4)](https://github.com/google-gemini/gemini-cli) [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-supported-181717)](https://github.com/features/copilot) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-059669)](https://opencode.ai)
 
 > **Multiply the agent's force, divide the human's effort.**
 >
 > ![A small human leans on one end of a lever, easily lifting a towering AI agent and stacks of code panels on the other end.](./hero.jpg)
 
-Agent Levers is a workflow toolkit for AI coding agents. It ships as a small set of Agent Skills — file-based, harness-agnostic — that bring structure (plan → do → check → act) to any non-trivial coding task. The same `skills/` tree runs in Claude Code, Gemini CLI, and GitHub Copilot.
+Agent Levers is a workflow toolkit for AI coding agents. It ships as a small set of Agent Skills — file-based, harness-agnostic — that bring structure (plan → do → check → act) to any non-trivial coding task. The same `skills/` tree runs in Claude Code, Gemini CLI, GitHub Copilot, and OpenCode.
 
 ## Why this exists
 
@@ -118,6 +118,10 @@ For local development (live-link, edits reload on next session):
 ```bash
 agy plugin install /path/to/agent-levers
 ```
+
+### OpenCode
+
+To use these skills in OpenCode, place or clone the skill directories under `.agents/skills/` (for project scope) or `~/.agents/skills/` (for global scope). OpenCode automatically discovers and loads them.
 
 ### GitHub Copilot
 

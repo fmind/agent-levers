@@ -3,7 +3,7 @@
 ## Overview
 
 - agent-levers ships a small set of slash-command skills (`/lever-init`, `/lever-new`, `/lever`, `/lever-status`) that give a coding agent a structured plan → do → check → act loop.
-- Skills are file-based and harness-agnostic: the same `skills/` tree works in Claude Code, Gemini CLI, and GitHub Copilot.
+- Skills are file-based and harness-agnostic: the same `skills/` tree works in Claude Code, Gemini CLI, GitHub Copilot, and OpenCode.
 - Repo state is `.agents/levers/<id>-<slug>/{lever.yaml, LEVER.md}` — `lever.yaml` validated against `lever.schema.json`.
 
 ## Conventions
@@ -33,4 +33,4 @@
 - `skills/` — Agent Skills (`lever-init`, `lever-new`, `lever`, `lever-status`); the `lever` dispatcher loads `references/<step>.md` on demand.
 - `lever.schema.json` — JSONSchema for end-user `.agents/levers/*/lever.yaml`.
 - `examples/levers/` — runnable walkthroughs validated by CI.
-- `.claude-plugin/`, `gemini-extension.json`, `plugin.json` — harness manifests for Claude Code, Gemini CLI, GitHub Copilot.
+- `.claude-plugin/`, `gemini-extension.json`, `plugin.json` — harness manifests for Claude Code, Gemini CLI, GitHub Copilot, and OpenCode.

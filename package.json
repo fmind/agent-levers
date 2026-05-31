@@ -1,6 +1,6 @@
 {
   "name": "agent-levers",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Levers for AI coding agents — multiply the agent's force, divide the human's effort.",
   "author": {
@@ -18,7 +18,8 @@
     "levers",
     "gemini-cli",
     "claude-code",
-    "github-copilot"
+    "github-copilot",
+    "opencode"
   ],
   "scripts": {
     "lint": "prettier --check \"**/*.{md,json,yml,yaml,mjs}\" && markdownlint-cli2",
