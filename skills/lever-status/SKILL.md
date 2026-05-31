@@ -1,6 +1,9 @@
 ---
 name: lever-status
 description: Inspect or cancel levers. List all (no arg), detail one (TL;DR + criteria + per-criterion events timeline), or cancel one with `<id> cancel [<reason>]`. Never advances the chain.
+metadata:
+  author: fmind
+  url: https://github.com/fmind/agent-levers/tree/main/skills/lever-status
 ---
 
 # lever-status

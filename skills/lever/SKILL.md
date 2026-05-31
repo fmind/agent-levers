@@ -1,6 +1,9 @@
 ---
 name: lever
 description: Advance an existing lever. Reads lever.yaml.step and runs the chain (plan → do → check → act → done) autonomously until it pauses or finishes.
+metadata:
+  author: fmind
+  url: https://github.com/fmind/agent-levers/tree/main/skills/lever
 ---
 
 # lever

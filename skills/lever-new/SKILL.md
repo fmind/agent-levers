@@ -1,6 +1,9 @@
 ---
 name: lever-new
 description: Start a new lever — discuss the ask in chat, then capture intent (Goal, Success sketch, Context, Open questions) as §Brief. Hands off via /lever <id>.
+metadata:
+  author: fmind
+  url: https://github.com/fmind/agent-levers/tree/main/skills/lever-new
 ---
 
 # lever-new

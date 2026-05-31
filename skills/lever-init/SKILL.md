@@ -1,6 +1,9 @@
 ---
 name: lever-init
 description: Bootstrap a repo for agent-levers. Creates .agents/levers/, wires CLAUDE.md/GEMINI.md to import AGENTS.md, writes an AGENTS.md skeleton when missing. Hands off via /lever-new.
+metadata:
+  author: fmind
+  url: https://github.com/fmind/agent-levers/tree/main/skills/lever-init
 ---
 
 # lever-init

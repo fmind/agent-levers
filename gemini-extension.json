@@ -1,5 +1,5 @@
 {
   "name": "agent-levers",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Levers for AI coding agents — multiply the agent's force, divide the human's effort."
 }
