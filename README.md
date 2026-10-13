@@ -251,6 +251,8 @@ Issues and PRs welcome. Two house rules to keep the framework lean:
 
 For non-trivial changes, the repo dogfoods its own framework: `/lever-new <title>` to capture intent, `/lever <id>` to drive the chain.
 
+The npm overrides keep the existing linter on patched YAML, Markdown, and TOML parsers, update KaTeX, and replace ajv-cli's deprecated glob dependency. Keep these overrides until upstream dependencies include the fixes. Use Node.js 22.12 or newer. Run `npm ci`, `npm run lint`, `npm run validate`, and `uvx pre-commit run --all-files` to check the locked dependencies. `npm audit` still reports upstream advisories without published fixes in [braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) and [sprintf-js](https://github.com/advisories/GHSA-hp3w-g68c-fv3c); passing checks does not mean the development dependencies are vulnerability-free.
+
 ## License
 
 MIT — see [LICENSE](./LICENSE).
